@@ -1,4 +1,4 @@
-package ar.com.wolox.android.example.model;
+package ar.com.wolox.android.foandroid.model;
 
 
 public class ExampleModel {

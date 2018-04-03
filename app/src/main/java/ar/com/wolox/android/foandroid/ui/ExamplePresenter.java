@@ -1,11 +1,11 @@
-package ar.com.wolox.android.example.ui;
+package ar.com.wolox.android.foandroid.ui;
 
 
 import android.util.Log;
 
 import java.util.Random;
 
-import ar.com.wolox.android.example.model.ExampleModel;
+import ar.com.wolox.android.foandroid.model.ExampleModel;
 import ar.com.wolox.wolmo.core.presenter.BasePresenter;
 
 public class ExamplePresenter extends BasePresenter<ExampleView> {

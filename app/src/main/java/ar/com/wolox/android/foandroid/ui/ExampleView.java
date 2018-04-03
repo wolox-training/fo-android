@@ -1,4 +1,4 @@
-package ar.com.wolox.android.example.ui;
+package ar.com.wolox.android.foandroid.ui;
 
 public interface ExampleView {
 

@@ -1,4 +1,4 @@
-package ar.com.wolox.android.example;
+package ar.com.wolox.android.foandroid;
 
 class BaseConfiguration {
 

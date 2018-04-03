@@ -1,9 +1,9 @@
-package ar.com.wolox.android.example.ui;
+package ar.com.wolox.android.foandroid.ui;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
-import ar.com.wolox.android.R;
+import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.wolmo.core.fragment.WolmoFragment;
 import butterknife.BindString;
 import butterknife.BindView;

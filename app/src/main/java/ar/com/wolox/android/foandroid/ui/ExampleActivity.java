@@ -1,7 +1,7 @@
-package ar.com.wolox.android.example.ui;
+package ar.com.wolox.android.foandroid.ui;
 
 
-import ar.com.wolox.android.R;
+import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.wolmo.core.activity.WolmoActivity;
 
 public class ExampleActivity extends WolmoActivity {
