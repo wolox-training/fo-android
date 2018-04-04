@@ -101,6 +101,7 @@ dependencies {
     // Android support libraries
     implementation "com.android.support:support-compat:$support_library_version"
     implementation "com.android.support:recyclerview-v7:$support_library_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Third-party
     implementation "com.jakewharton:butterknife:$butterknife_version"
