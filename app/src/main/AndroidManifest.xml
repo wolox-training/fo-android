@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:name=".BootstrapApplication"
+        android:name=".TrainingApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
@@ -22,6 +22,10 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".ui.BlankActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

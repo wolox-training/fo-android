@@ -8,7 +8,7 @@
     android:layout_marginBottom="@dimen/spacing_large">
 
     <ImageView
-        android:id="@+id/login_cover"
+        android:id="@+id/activity_login_login_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
@@ -18,20 +18,20 @@
         android:layout_width="@dimen/spacing_none"
         android:layout_height="@dimen/spacing_none"
         android:src="@drawable/bg_gradient_logo"
-        app:layout_constraintTop_toTopOf="@id/login_cover"
-        app:layout_constraintBottom_toBottomOf="@id/login_cover"
-        app:layout_constraintLeft_toLeftOf="@id/login_cover"
-        app:layout_constraintRight_toRightOf="@id/login_cover" />
+        app:layout_constraintTop_toTopOf="@id/activity_login_login_cover"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_login_cover"
+        app:layout_constraintLeft_toLeftOf="@id/activity_login_login_cover"
+        app:layout_constraintRight_toRightOf="@id/activity_login_login_cover" />
 
     <ImageView
-        android:id="@+id/login_logo"
+        android:id="@+id/activity_login_login_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/wolox_logo_large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_cover"
-        app:layout_constraintBottom_toBottomOf="@id/login_cover" />
+        app:layout_constraintTop_toBottomOf="@id/activity_login_login_cover"
+        app:layout_constraintBottom_toBottomOf="@id/activity_login_login_cover" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,9 +40,10 @@
         android:layout_marginRight="@dimen/spacing_large"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/login_logo">
+        app:layout_constraintTop_toBottomOf="@id/activity_login_login_logo">
 
         <EditText
+            android:id="@+id/activity_login_email_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
@@ -50,6 +51,7 @@
             android:maxLines="1" />
 
         <EditText
+            android:id="@+id/activity_login_password_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
@@ -57,6 +59,7 @@
             android:maxLines="1" />
 
         <Button
+            android:id="@+id/activity_login_login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/white"
