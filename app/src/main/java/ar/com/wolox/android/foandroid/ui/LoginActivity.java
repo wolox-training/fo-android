@@ -14,16 +14,20 @@ import ar.com.wolox.android.foandroid.R;
 
 import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_DEFAULT;
 import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_EMAIL;
+
+import ar.com.wolox.android.foandroid.TrainingApplication;
+import ar.com.wolox.android.foandroid.model.User;
 import ar.com.wolox.android.foandroid.validations.EmailFormatValidation;
 import ar.com.wolox.android.foandroid.validations.EmptyEmailValidation;
 import ar.com.wolox.android.foandroid.validations.EmptyPasswordValidation;
 import ar.com.wolox.android.foandroid.validations.Validation;
 import ar.com.wolox.android.foandroid.validations.ValidationResult;
 import ar.com.wolox.wolmo.core.activity.WolmoActivity;
+import ar.com.wolox.wolmo.core.util.ToastUtils;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class LoginActivity extends WolmoActivity {
+public class LoginActivity extends WolmoActivity implements LoginPresenter.LoginView {
 
     @BindView(R.id.activity_login_email_field) protected EditText mEmailField;
     @BindView(R.id.activity_login_password_field) protected EditText mPasswordField;
@@ -33,6 +37,8 @@ public class LoginActivity extends WolmoActivity {
 
     private List<Validation<String>> emailValidationList = buildEmailValidationList();
     private List<Validation<String>> passwordValidationList = buildPasswordValidationList();
+
+    private LoginPresenter mLoginPresenter;
 
     @Override
     protected void init() {
@@ -46,6 +52,9 @@ public class LoginActivity extends WolmoActivity {
 
         mTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance());
         mTermsAndConditions.setLinkTextColor(mTermsAndConditions.getCurrentTextColor());
+
+        mLoginPresenter = new LoginPresenter(this, TrainingApplication.RETROFIT_SERVICES_INSTANCE);
+        mLoginPresenter.onViewCreated();
     }
 
     @Override
@@ -57,16 +66,8 @@ public class LoginActivity extends WolmoActivity {
     void onLoginClick() {
 
         if (validateEmail() & validatePassword()) {
-            // Save email
-            final String email = mEmailField.getText().toString();
-            getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE)
-                    .edit()
-                    .putString(SP_KEY_EMAIL, email)
-                    .apply();
 
-            // Start blank activity
-            startActivity(new Intent(this, BlankActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            mLoginPresenter.login(mEmailField.getText().toString(), mPasswordField.getText().toString());
         }
     }
 
@@ -86,6 +87,24 @@ public class LoginActivity extends WolmoActivity {
         return true;
     }
 
+    @Override
+    public void onLoginSuccessful(User user) {
+        ToastUtils.show("Login successful, " + user.getName());
+    }
+
+    @Override
+    public void onLoginFailed() {
+        ToastUtils.show(R.string.login_failed_error);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mEmailField.setError(null);
+        mPasswordField.setError(null);
+        mLoginPresenter.onViewDestroyed();
+    }
+
     private boolean validateEmail() {
         return validateFormElement(mEmailField, emailValidationList);
     }
@@ -101,17 +120,11 @@ public class LoginActivity extends WolmoActivity {
         return list;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mEmailField.setError(null);
-        mPasswordField.setError(null);
-    }
-
     private List<Validation<String>> buildPasswordValidationList() {
         List<Validation<String>> list = new LinkedList<>();
         list.add(new EmptyPasswordValidation(this));
         return list;
     }
+
 
 }

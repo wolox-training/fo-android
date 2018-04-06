@@ -1,6 +1,7 @@
 package ar.com.wolox.android.foandroid.ui;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.widget.TextView;
 
 import ar.com.wolox.android.foandroid.R;
@@ -21,6 +22,11 @@ public class BlankActivity extends WolmoActivity {
                 getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE)
                         .getString(SP_KEY_EMAIL, null)
         );
+    }
+
+    @Override
+    protected boolean handleArguments(Bundle args) {
+        return getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE).contains(SP_KEY_EMAIL);
     }
 
     @Override

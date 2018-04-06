@@ -2,7 +2,7 @@ package ar.com.wolox.android.foandroid;
 
 public class BaseConfiguration {
 
-    public static final String EXAMPLE_CONFIGURAITON_KEY = "http://www.example.com";
+    public static final String API_ENDPOINT = "https://android-training.herokuapp.com";
 
     // SharedPreferences
     public static final String SP_DEFAULT = "ar.com.wolox.android.foandroid.SP_DEFAULT";
