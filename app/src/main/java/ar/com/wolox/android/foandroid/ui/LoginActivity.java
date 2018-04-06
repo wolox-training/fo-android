@@ -2,9 +2,10 @@ package ar.com.wolox.android.foandroid.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class LoginActivity extends WolmoActivity {
     @BindView(R.id.activity_login_email_field) protected EditText mEmailField;
     @BindView(R.id.activity_login_password_field) protected EditText mPasswordField;
     @BindView(R.id.activity_login_login_button) protected Button mLoginButton;
+    @BindView(R.id.activity_login_signup_button) protected Button mSignupButton;
+    @BindView(R.id.activity_login_terms_and_conditions) protected TextView mTermsAndConditions;
 
     private List<Validation<String>> emailValidationList = buildEmailValidationList();
     private List<Validation<String>> passwordValidationList = buildPasswordValidationList();
@@ -40,6 +43,9 @@ public class LoginActivity extends WolmoActivity {
             startActivity(new Intent(this, BlankActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
+
+        mTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance());
+        mTermsAndConditions.setLinkTextColor(mTermsAndConditions.getCurrentTextColor());
     }
 
     @Override
@@ -62,6 +68,11 @@ public class LoginActivity extends WolmoActivity {
             startActivity(new Intent(this, BlankActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
+    }
+
+    @OnClick(R.id.activity_login_signup_button)
+    void onSignupClick() {
+        startActivity(new Intent(this, SignupActivity.class));
     }
 
     private boolean validateFormElement(EditText formElement, List<Validation<String>> validationList) {
@@ -88,6 +99,13 @@ public class LoginActivity extends WolmoActivity {
         list.add(new EmptyEmailValidation(this));
         list.add(new EmailFormatValidation(this));
         return list;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mEmailField.setError(null);
+        mPasswordField.setError(null);
     }
 
     private List<Validation<String>> buildPasswordValidationList() {

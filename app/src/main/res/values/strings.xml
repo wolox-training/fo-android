@@ -4,10 +4,10 @@
     <string name="password">Password</string>
     <string name="log_in">LOG IN</string>
     <string name="sign_up">SIGN UP</string>
-    <string name="agree_terms">By joining you agree to our Terms &amp; Conditions</string>
     <string name="empty_email_error">You must provide an email</string>
     <string name="invalid_email_error">Email should have a valid format (example@wolox.com.ar)</string>
     <string name="empty_password_error">You must provide a password</string>
+    <string name="agree_terms">By joining you agree to our <a href="https://www.wolox.com.ar">Terms &amp; Conditions</a></string>
 
     <!-- General -->
     <string name="example_title">ExampleFragment</string>

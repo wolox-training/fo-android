@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Patterns;
 
 import ar.com.wolox.android.foandroid.R;
-import ar.com.wolox.android.foandroid.TrainingApplication;
 
 public class EmailFormatValidation implements Validation<String> {
 

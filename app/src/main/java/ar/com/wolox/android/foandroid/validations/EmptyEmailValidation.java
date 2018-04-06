@@ -1,11 +1,9 @@
 package ar.com.wolox.android.foandroid.validations;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.TextUtils;
 
 import ar.com.wolox.android.foandroid.R;
-import ar.com.wolox.android.foandroid.TrainingApplication;
 
 public class EmptyEmailValidation implements Validation<String> {
 

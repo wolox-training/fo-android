@@ -1,7 +1,6 @@
 package ar.com.wolox.android.foandroid.ui;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import ar.com.wolox.android.foandroid.R;

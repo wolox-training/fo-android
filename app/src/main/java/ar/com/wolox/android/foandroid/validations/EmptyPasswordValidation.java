@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import ar.com.wolox.android.foandroid.R;
-import ar.com.wolox.android.foandroid.TrainingApplication;
 
 public class EmptyPasswordValidation implements Validation<String> {
 
