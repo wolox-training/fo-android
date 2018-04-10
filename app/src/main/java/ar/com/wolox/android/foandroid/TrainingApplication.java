@@ -1,6 +1,5 @@
 package ar.com.wolox.android.foandroid;
 
-import android.app.Application;
 import android.content.Context;
 
 import ar.com.wolox.android.foandroid.networking.TrainingRetrofitServices;

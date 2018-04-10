@@ -7,9 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import ar.com.wolox.android.foandroid.R;
 
 import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_DEFAULT;
@@ -17,9 +14,6 @@ import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_EMAIL;
 
 import ar.com.wolox.android.foandroid.TrainingApplication;
 import ar.com.wolox.android.foandroid.model.User;
-import ar.com.wolox.android.foandroid.validations.EmailFormatValidation;
-import ar.com.wolox.android.foandroid.validations.EmptyEmailValidation;
-import ar.com.wolox.android.foandroid.validations.EmptyPasswordValidation;
 import ar.com.wolox.android.foandroid.validations.Validation;
 import ar.com.wolox.android.foandroid.validations.ValidationResult;
 import ar.com.wolox.wolmo.core.activity.WolmoActivity;
@@ -34,9 +28,6 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     @BindView(R.id.activity_login_login_button) protected Button mLoginButton;
     @BindView(R.id.activity_login_signup_button) protected Button mSignupButton;
     @BindView(R.id.activity_login_terms_and_conditions) protected TextView mTermsAndConditions;
-
-    private List<Validation<String>> emailValidationList = buildEmailValidationList();
-    private List<Validation<String>> passwordValidationList = buildPasswordValidationList();
 
     private LoginPresenter mLoginPresenter;
 
@@ -76,15 +67,13 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
         startActivity(new Intent(this, SignupActivity.class));
     }
 
-    private boolean validateFormElement(EditText formElement, List<Validation<String>> validationList) {
-        for (Validation<String> validation : validationList) {
-            ValidationResult res = validation.validate(formElement.getText().toString());
-            if (!res.ok) {
-                formElement.setError(res.errorMessage);
-                return false;
-            }
+    private boolean validateFormElement(EditText formElement, Validation<String> validation) {
+        String textString = formElement.getText().toString();
+        ValidationResult validationResult = validation.validate(textString);
+        if (!validationResult.ok) {
+            formElement.setError(getResources().getString(validationResult.errorMessageID));
         }
-        return true;
+        return validationResult.ok;
     }
 
     @Override
@@ -106,25 +95,11 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     }
 
     private boolean validateEmail() {
-        return validateFormElement(mEmailField, emailValidationList);
+        return validateFormElement(mEmailField, mLoginPresenter::validateEmail);
     }
 
     private boolean validatePassword() {
-        return validateFormElement(mPasswordField, passwordValidationList);
+        return validateFormElement(mPasswordField, mLoginPresenter::validatePassword);
     }
-
-    private List<Validation<String>> buildEmailValidationList() {
-        List<Validation<String>> list = new LinkedList<>();
-        list.add(new EmptyEmailValidation(this));
-        list.add(new EmailFormatValidation(this));
-        return list;
-    }
-
-    private List<Validation<String>> buildPasswordValidationList() {
-        List<Validation<String>> list = new LinkedList<>();
-        list.add(new EmptyPasswordValidation(this));
-        return list;
-    }
-
 
 }
