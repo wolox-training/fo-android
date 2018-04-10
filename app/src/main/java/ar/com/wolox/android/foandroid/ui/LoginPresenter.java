@@ -39,25 +39,31 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
                     @Override
                     public void onResponseSuccessful(List<User> users) {
                         LoginView loginView = getView();
-                        if (users.isEmpty()) {
-                            loginView.onLoginFailed();
-                        } else {
-                            mSharedPreferences
-                                    .edit()
-                                    .putString(SP_KEY_USER, users.get(0).getUsername())
-                                    .apply();
-                            loginView.onLoginSuccessful();
+                        if (isViewCreated()) {
+                            if (users.isEmpty()) {
+                                loginView.onLoginFailed(true);
+                            } else {
+                                mSharedPreferences
+                                        .edit()
+                                        .putString(SP_KEY_USER, users.get(0).getUsername())
+                                        .apply();
+                                loginView.onLoginSuccessful();
+                            }
                         }
                     }
 
                     @Override
                     public void onResponseFailed(ResponseBody responseBody, int i) {
-                        getView().onLoginFailed();
+                        if (isViewCreated()) {
+                            getView().onLoginFailed(true);
+                        }
                     }
 
                     @Override
                     public void onCallFailure(Throwable throwable) {
-                        getView().onLoginFailed();
+                        if (isViewCreated()) {
+                            getView().onLoginFailed(false);
+                        }
                     }
                 });
 
@@ -100,6 +106,6 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
 
     public interface LoginView {
         void onLoginSuccessful();
-        void onLoginFailed();
+        void onLoginFailed(boolean activeInternetConnection);
     }
 }
