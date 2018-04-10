@@ -2,6 +2,7 @@ package ar.com.wolox.android.foandroid.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.method.LinkMovementMethod;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,10 +11,9 @@ import android.widget.TextView;
 import ar.com.wolox.android.foandroid.R;
 
 import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_DEFAULT;
-import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_EMAIL;
+import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_USER;
 
 import ar.com.wolox.android.foandroid.TrainingApplication;
-import ar.com.wolox.android.foandroid.model.User;
 import ar.com.wolox.android.foandroid.validations.Validation;
 import ar.com.wolox.android.foandroid.validations.ValidationResult;
 import ar.com.wolox.wolmo.core.activity.WolmoActivity;
@@ -33,10 +33,11 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
 
     @Override
     protected void init() {
-        final String savedEmail = getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE)
-                .getString(SP_KEY_EMAIL, null);
+        SharedPreferences sharedPreferences = getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE);
+        final String username = getSharedPreferences(SP_DEFAULT, Context.MODE_PRIVATE)
+                .getString(SP_KEY_USER, null);
 
-        if (savedEmail != null) {
+        if (username != null) {
             startActivity(new Intent(this, BlankActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
@@ -44,7 +45,10 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
         mTermsAndConditions.setMovementMethod(LinkMovementMethod.getInstance());
         mTermsAndConditions.setLinkTextColor(mTermsAndConditions.getCurrentTextColor());
 
-        mLoginPresenter = new LoginPresenter(this, TrainingApplication.RETROFIT_SERVICES_INSTANCE);
+        mLoginPresenter = new LoginPresenter(
+                this,
+                TrainingApplication.RETROFIT_SERVICES_INSTANCE,
+                sharedPreferences);
         mLoginPresenter.onViewCreated();
     }
 
@@ -77,8 +81,9 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     }
 
     @Override
-    public void onLoginSuccessful(User user) {
-        ToastUtils.show("Login successful, " + user.getName());
+    public void onLoginSuccessful() {
+        startActivity(new Intent(this, BlankActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
     }
 
     @Override

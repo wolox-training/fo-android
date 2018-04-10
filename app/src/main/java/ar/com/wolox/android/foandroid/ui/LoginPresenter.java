@@ -1,5 +1,7 @@
 package ar.com.wolox.android.foandroid.ui;
 
+import android.content.SharedPreferences;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,15 +17,19 @@ import ar.com.wolox.wolmo.networking.retrofit.RetrofitServices;
 import ar.com.wolox.wolmo.networking.retrofit.callback.NetworkCallback;
 import okhttp3.ResponseBody;
 
+import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_USER;
+
 public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
 
     private RetrofitServices mRetrofitServices;
+    private SharedPreferences mSharedPreferences;
     private List<Validation<String>> emailValidationList = buildEmailValidationList();
     private List<Validation<String>> passwordValidationList = buildPasswordValidationList();
 
-    public LoginPresenter(LoginView loginView, RetrofitServices retrofitServices) {
+    public LoginPresenter(LoginView loginView, RetrofitServices retrofitServices, SharedPreferences sharedPreferences) {
         super(loginView);
         mRetrofitServices = retrofitServices;
+        mSharedPreferences = sharedPreferences;
     }
 
     public void login(String email, String password) {
@@ -36,7 +42,11 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
                         if (users.isEmpty()) {
                             loginView.onLoginFailed();
                         } else {
-                            loginView.onLoginSuccessful(users.get(0));
+                            mSharedPreferences
+                                    .edit()
+                                    .putString(SP_KEY_USER, users.get(0).getUsername())
+                                    .apply();
+                            loginView.onLoginSuccessful();
                         }
                     }
 
@@ -89,7 +99,7 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
     }
 
     public interface LoginView {
-        void onLoginSuccessful(User user);
+        void onLoginSuccessful();
         void onLoginFailed();
     }
 }
