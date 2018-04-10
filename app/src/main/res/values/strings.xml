@@ -15,6 +15,8 @@
     <string name="example_randomize">Randomize</string>
     <string name="example_wolox">WOLOX</string>
     <string name="example_message">The presenter generated the number %1$d and this view is displaying it</string>
-    <string name="login_failed_error">Login failed</string>
+
+    <string name="invalid_credentials_error">Email or password is incorrect</string>
+    <string name="internet_connection_error">No internet connection</string>
 
 </resources>

@@ -78,8 +78,12 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     }
 
     @Override
-    public void onLoginFailed() {
-        ToastUtils.show(R.string.login_failed_error);
+    public void onLoginFailed(boolean activeInternetConnection) {
+        if (activeInternetConnection) {
+            ToastUtils.show(R.string.invalid_credentials_error);
+        } else {
+            ToastUtils.show(R.string.internet_connection_error);
+        }
     }
 
     @Override

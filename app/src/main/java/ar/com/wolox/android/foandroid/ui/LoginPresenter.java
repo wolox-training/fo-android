@@ -40,7 +40,7 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
                     public void onResponseSuccessful(List<User> users) {
                         LoginView loginView = getView();
                         if (users.isEmpty()) {
-                            loginView.onLoginFailed();
+                            loginView.onLoginFailed(true);
                         } else {
                             mSharedPreferences
                                     .edit()
@@ -52,12 +52,12 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
 
                     @Override
                     public void onResponseFailed(ResponseBody responseBody, int i) {
-                        getView().onLoginFailed();
+                        getView().onLoginFailed(true);
                     }
 
                     @Override
                     public void onCallFailure(Throwable throwable) {
-                        getView().onLoginFailed();
+                        getView().onLoginFailed(false);
                     }
                 });
 
@@ -100,6 +100,6 @@ public class LoginPresenter extends BasePresenter<LoginPresenter.LoginView> {
 
     public interface LoginView {
         void onLoginSuccessful();
-        void onLoginFailed();
+        void onLoginFailed(boolean activeInternetConnection);
     }
 }
