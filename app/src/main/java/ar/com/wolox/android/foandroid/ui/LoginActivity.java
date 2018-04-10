@@ -65,6 +65,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
 
         if (validateEmail() & validatePassword()) {
             mProgressBar.setVisibility(View.VISIBLE);
+            mLoginButton.setEnabled(false);
             mLoginPresenter.login(mEmailField.getText().toString(), mPasswordField.getText().toString());
         }
     }
@@ -83,6 +84,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     @Override
     public void onLoginFailed(boolean activeInternetConnection) {
         mProgressBar.setVisibility(View.INVISIBLE);
+        mLoginButton.setEnabled(true);
         if (activeInternetConnection) {
             ToastUtils.show(R.string.invalid_credentials_error);
         } else {
