@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.method.LinkMovementMethod;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import ar.com.wolox.android.foandroid.R;
@@ -28,6 +30,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     @BindView(R.id.activity_login_login_button) protected Button mLoginButton;
     @BindView(R.id.activity_login_signup_button) protected Button mSignupButton;
     @BindView(R.id.activity_login_terms_and_conditions) protected TextView mTermsAndConditions;
+    @BindView(R.id.activity_login_progress_bar) protected ProgressBar mProgressBar;
 
     private LoginPresenter mLoginPresenter;
 
@@ -61,7 +64,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
     void onLoginClick() {
 
         if (validateEmail() & validatePassword()) {
-
+            mProgressBar.setVisibility(View.VISIBLE);
             mLoginPresenter.login(mEmailField.getText().toString(), mPasswordField.getText().toString());
         }
     }
@@ -79,6 +82,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
 
     @Override
     public void onLoginFailed(boolean activeInternetConnection) {
+        mProgressBar.setVisibility(View.INVISIBLE);
         if (activeInternetConnection) {
             ToastUtils.show(R.string.invalid_credentials_error);
         } else {
