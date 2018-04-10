@@ -11,13 +11,17 @@ public class ValidationResult {
      */
     public boolean ok;
     /**
-     * An error message explaining why the object was not valid. If <code>{@link #ok} == true</code>,
-     * this field should be ignored.
+     * The id of an error message (as in R.string) explaining why the object was not valid.
+     * If <code>{@link #ok} == true</code>, this field should be ignored.
      */
-    public String errorMessage;
+    public int errorMessageID;
 
-    public ValidationResult(boolean ok, String errorMessage) {
+    public ValidationResult() {
+        this(true, 0);
+    }
+
+    public ValidationResult(boolean ok, int errorMessageID) {
         this.ok = ok;
-        this.errorMessage = errorMessage;
+        this.errorMessageID = errorMessageID;
     }
 }
