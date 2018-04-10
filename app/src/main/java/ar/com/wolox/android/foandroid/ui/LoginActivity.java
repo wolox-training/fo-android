@@ -71,15 +71,6 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
         startActivity(new Intent(this, SignupActivity.class));
     }
 
-    private boolean validateFormElement(EditText formElement, Validation<String> validation) {
-        String textString = formElement.getText().toString();
-        ValidationResult validationResult = validation.validate(textString);
-        if (!validationResult.ok) {
-            formElement.setError(getResources().getString(validationResult.errorMessageID));
-        }
-        return validationResult.ok;
-    }
-
     @Override
     public void onLoginSuccessful() {
         startActivity(new Intent(this, BlankActivity.class)
@@ -105,6 +96,15 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
 
     private boolean validatePassword() {
         return validateFormElement(mPasswordField, mLoginPresenter::validatePassword);
+    }
+
+    private boolean validateFormElement(EditText formElement, Validation<String> validation) {
+        String textString = formElement.getText().toString();
+        ValidationResult validationResult = validation.validate(textString);
+        if (!validationResult.ok) {
+            formElement.setError(getResources().getString(validationResult.errorMessageID));
+        }
+        return validationResult.ok;
     }
 
 }
