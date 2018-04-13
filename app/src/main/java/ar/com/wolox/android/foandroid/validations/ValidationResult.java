@@ -24,4 +24,16 @@ public class ValidationResult {
         this.ok = ok;
         this.errorMessageID = errorMessageID;
     }
+
+    @Override
+    public int hashCode() {
+        return errorMessageID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ValidationResult &&
+                ((ValidationResult) o).ok == this.ok &&
+                ((ValidationResult) o).errorMessageID == this.errorMessageID;
+    }
 }

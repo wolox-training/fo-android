@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +17,13 @@ import java.util.List;
 import ar.com.wolox.android.foandroid.model.User;
 import ar.com.wolox.android.foandroid.networking.LoginService;
 import ar.com.wolox.android.foandroid.ui.LoginPresenter;
+import ar.com.wolox.android.foandroid.validations.ValidationResult;
 import ar.com.wolox.wolmo.networking.retrofit.RetrofitServices;
 import ar.com.wolox.wolmo.networking.retrofit.callback.NetworkCallback;
 import retrofit2.Call;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -27,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+@RunWith(RobolectricTestRunner.class)
 public class LoginPresenterTest {
 
     private LoginPresenter mLoginPresenter;
@@ -165,5 +171,35 @@ public class LoginPresenterTest {
         mLoginPresenter.onViewDestroyed();
         mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
         verifyZeroInteractions(mLoginViewMock);
+    }
+
+    @Test
+    public void validateEmail_empty() {
+        ValidationResult emailValidationResult = mLoginPresenter.validateEmail("");
+        assertEquals(new ValidationResult(false, R.string.empty_email_error), emailValidationResult);
+    }
+
+    @Test
+    public void validateEmail_invalidFormat() {
+        ValidationResult emailValidationResult = mLoginPresenter.validateEmail("invalidEmail");
+        assertEquals(new ValidationResult(false, R.string.invalid_email_error), emailValidationResult);
+    }
+
+    @Test
+    public void validateEmail_validFormat() {
+        ValidationResult emailValidationResult = mLoginPresenter.validateEmail("valid@wolox.com.ar");
+        assertTrue(emailValidationResult.ok);
+    }
+
+    @Test
+    public void validatePassword_empty() {
+        ValidationResult passwordValidationResult = mLoginPresenter.validatePassword("");
+        assertEquals(new ValidationResult(false, R.string.empty_password_error), passwordValidationResult);
+    }
+
+    @Test
+    public void validatePassword_nonEmpty() {
+        ValidationResult passwordValidationResult = mLoginPresenter.validatePassword("password");
+        assertTrue(passwordValidationResult.ok);
     }
 }
