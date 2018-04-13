@@ -12,7 +12,7 @@ import static ar.com.wolox.android.foandroid.BaseConfiguration.SP_KEY_USER;
 
 import butterknife.BindView;
 
-public class BlankActivity extends WolmoActivity {
+public class HomePageActivity extends WolmoActivity {
 
     @BindView(R.id.activity_blank_welcome_message) TextView mWelcomeMessage;
 
