@@ -24,6 +24,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class LoginPresenterTest {
@@ -105,5 +106,64 @@ public class LoginPresenterTest {
         mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
 
         verify(mLoginViewMock, times(1)).onLoginSuccessful();
+    }
+
+    @Test
+    public void login_noInternetAfterViewDestroyed() {
+
+        doAnswer(invocation -> {
+            NetworkCallback<List<User>> networkCallback = (NetworkCallback<List<User>>)invocation.getArguments()[0];
+            networkCallback.onCallFailure(null);
+            return null;
+        }).when(mCallMock).enqueue(any(NetworkCallback.class));
+        mLoginPresenter.onViewDestroyed();
+        mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
+
+        verifyZeroInteractions(mLoginViewMock);
+    }
+
+    @Test
+    public void login_requestFailedAfterViewDestroyed() {
+
+        doAnswer(invocation -> {
+            NetworkCallback<List<User>> networkCallback = (NetworkCallback<List<User>>)invocation.getArguments()[0];
+            networkCallback.onResponseFailed(null, 0);
+            return null;
+        }).when(mCallMock).enqueue(any(NetworkCallback.class));
+        mLoginPresenter.onViewDestroyed();
+        mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
+
+        verifyZeroInteractions(mLoginViewMock);
+    }
+
+    @Test
+    public void login_emptyResponseAfterViewDestroyed() {
+
+        doAnswer(invocation -> {
+            NetworkCallback<List<User>> networkCallback = (NetworkCallback<List<User>>)invocation.getArguments()[0];
+            networkCallback.onResponseSuccessful( new LinkedList<>());
+            return null;
+        }).when(mCallMock).enqueue(any(NetworkCallback.class));
+        mLoginPresenter.onViewDestroyed();
+        mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
+
+        verifyZeroInteractions(mLoginViewMock);
+    }
+
+    @Test
+    public void login_successfulResponseAfterViewDestroyed() {
+        List<User> singleUserList = new LinkedList<>();
+        User user = new User();
+        user.setUsername("");
+        singleUserList.add(user);
+
+        doAnswer(invocation -> {
+            NetworkCallback<List<User>> networkCallback = (NetworkCallback<List<User>>)invocation.getArguments()[0];
+            networkCallback.onResponseSuccessful(singleUserList);
+            return null;
+        }).when(mCallMock).enqueue(any(NetworkCallback.class));
+        mLoginPresenter.onViewDestroyed();
+        mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
+        verifyZeroInteractions(mLoginViewMock);
     }
 }
