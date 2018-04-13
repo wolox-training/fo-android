@@ -12,6 +12,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import ar.com.wolox.android.foandroid.ui.LoginPresenter;
 import ar.com.wolox.wolmo.networking.retrofit.RetrofitServices;
@@ -20,6 +22,7 @@ import okhttp3.mockwebserver.MockWebServer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,18 +37,28 @@ public class LoginPresenterWebTest {
     private MockWebServer mServer;
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+    public Semaphore mSemaphore;
 
     private static final String EXAMPLE_EMAIL = "email@wolox.com.ar";
     private static final String EXAMPLE_PASSWORD = "password";
 
     @Before
     public void setUp() throws IOException {
+        mSemaphore = new Semaphore(0, false);
         mServer = new MockWebServer();
         mServer.start();
         mTestRetrofitServices = new TestRetrofitServices(mServer.url("").toString());
         mTestRetrofitServices.init();
         when(mSharedPreferencesMock.edit()).thenReturn(mEditorMock);
         when(mEditorMock.putString(any(String.class), any(String.class))).thenReturn(mEditorMock);
+        doAnswer(invocation -> {
+            mSemaphore.release();
+            return null;
+        }).when(mLoginViewMock).onLoginFailed(any(Boolean.class));
+        doAnswer(invocation -> {
+            mSemaphore.release();
+            return null;
+        }).when(mLoginViewMock).onLoginSuccessful();
         mLoginPresenter = new LoginPresenter(mLoginViewMock, mTestRetrofitServices, mSharedPreferencesMock);
         mLoginPresenter.onViewCreated();
     }
@@ -54,7 +67,7 @@ public class LoginPresenterWebTest {
     public void login_serverError() throws Exception {
         mServer.enqueue(new MockResponse().setResponseCode(500));
         mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
-         Thread.sleep(1000);
+        mSemaphore.tryAcquire(1, TimeUnit.SECONDS);
         verify(mLoginViewMock, times(1)).onLoginFailed(eq(true));
     }
 
@@ -63,7 +76,7 @@ public class LoginPresenterWebTest {
         mServer.shutdown();
         mServer = null;
         mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
-         Thread.sleep(1000);
+        mSemaphore.tryAcquire(1, TimeUnit.SECONDS);
         verify(mLoginViewMock, times(1)).onLoginFailed(eq(false));
     }
 
@@ -74,7 +87,7 @@ public class LoginPresenterWebTest {
                 .addHeader("Content-Type: JSON")
                 .setBody(SAMPLE_JSON_ANSWER));
         mLoginPresenter.login(EXAMPLE_EMAIL, EXAMPLE_PASSWORD);
-        Thread.sleep(1000);
+        mSemaphore.tryAcquire(1, TimeUnit.SECONDS);
         verify(mLoginViewMock, times(1)).onLoginSuccessful();
     }
 
