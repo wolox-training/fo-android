@@ -12,4 +12,6 @@
     <color name="news_summary">#99999b</color>
 
     <color name="image_placeholder_color">#999999</color>
+
+    <color name="accent">#90bf5e</color>
 </resources>
