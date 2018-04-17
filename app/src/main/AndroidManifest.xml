@@ -24,7 +24,7 @@
         </activity>
 
         <activity
-            android:name=".ui.BlankActivity"
+            android:name=".ui.HomePageActivity"
             android:screenOrientation="portrait" />
 
         <activity

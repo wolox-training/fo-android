@@ -29,5 +29,12 @@
     <dimen name="font_big">22sp</dimen>
     <dimen name="font_huge">24sp</dimen>
 
+    <!-- Training guidelines -->
+    <dimen name="level_1">8dp</dimen>
+    <dimen name="level_2">24dp</dimen>
+    <dimen name="level_3">48dp</dimen>
+    <dimen name="level_4">56dp</dimen>
+    <dimen name="level_5">88dp</dimen>
+
     <!-- Add your custom dimens here -->
 </resources>

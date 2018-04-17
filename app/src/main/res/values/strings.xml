@@ -8,6 +8,9 @@
     <string name="invalid_email_error">Email should have a valid format (example@wolox.com.ar)</string>
     <string name="empty_password_error">You must provide a password</string>
     <string name="agree_terms">By joining you agree to our <a href="https://www.wolox.com.ar">Terms &amp; Conditions</a></string>
+    <string name="wolox">Wolox</string>
+    <string name="news">NEWS</string>
+    <string name="profile">PROFILE</string>
 
     <!-- General -->
     <string name="example_title">ExampleFragment</string>

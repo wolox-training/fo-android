@@ -41,7 +41,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
                 .getString(SP_KEY_USER, null);
 
         if (username != null) {
-            startActivity(new Intent(this, BlankActivity.class)
+            startActivity(new Intent(this, HomePageActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
 
@@ -77,7 +77,7 @@ public class LoginActivity extends WolmoActivity implements LoginPresenter.Login
 
     @Override
     public void onLoginSuccessful() {
-        startActivity(new Intent(this, BlankActivity.class)
+        startActivity(new Intent(this, HomePageActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
     }
 
