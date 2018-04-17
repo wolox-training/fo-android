@@ -4,4 +4,7 @@
     <color name="green_wolox_transparent">#bb91be5e</color>
 
     <color name="blue_button">#44a7ca</color>
+
+    <color name="selected_tab_text">#91be5e</color>
+    <color name="unselected_tab_text">#9c9c9d</color>
 </resources>

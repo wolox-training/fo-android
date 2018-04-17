@@ -15,6 +15,7 @@
         android:id="@+id/tab_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/font_small_more"/>
+        android:textSize="@dimen/font_small_more"
+        android:textColor="@color/tab_text_color"/>
 
 </android.widget.LinearLayout>
