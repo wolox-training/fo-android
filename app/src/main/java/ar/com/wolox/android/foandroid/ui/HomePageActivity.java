@@ -1,5 +1,7 @@
 package ar.com.wolox.android.foandroid.ui;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
@@ -34,19 +36,11 @@ public class HomePageActivity extends WolmoActivity {
     @BindView(R.id.activity_home_view_pager)
     protected ViewPager mViewPager;
 
-    private final PageDescriptor[] mPageDescriptors = {
-            new PageDescriptor(NewsFragment::new,
-                                R.drawable.ic_news_list_on,
-                                R.drawable.ic_news_list_off,
-                                R.string.news),
-            new PageDescriptor(ProfileFragment::new,
-                                R.drawable.ic_profile_on,
-                                R.drawable.ic_profile_off,
-                                R.string.profile)
-    };
+    private PageDescriptor[] mPageDescriptors;
 
     @Override
     protected void init() {
+        setUpPageDescriptors();
         setSupportActionBar(mToolbar);
         setUpActionBar();
         setUpTabLayout();
@@ -62,6 +56,18 @@ public class HomePageActivity extends WolmoActivity {
         return R.layout.activity_home;
     }
 
+    private void setUpPageDescriptors() {
+        Resources resources = getResources();
+        mPageDescriptors = new PageDescriptor[]{
+                new PageDescriptor(NewsFragment::new,
+                        resources.getDrawable(R.drawable.news_list_icon),
+                        R.string.news),
+                new PageDescriptor(ProfileFragment::new,
+                        resources.getDrawable(R.drawable.profile_icon),
+                        R.string.profile)
+        };
+    }
+
     private void setUpActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
@@ -73,30 +79,10 @@ public class HomePageActivity extends WolmoActivity {
         HomePagerAdapter pagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(pagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
         for (int i = 0; i < mPageDescriptors.length; i++) {
             mTabLayout.getTabAt(i).setCustomView(pagerAdapter.getTabView(i, mTabLayout));
         }
-        ((ImageView)mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tab_icon))
-                .setImageResource(mPageDescriptors[0].mSelectedIcon);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                ((ImageView) tab.getCustomView().findViewById(R.id.tab_icon))
-                        .setImageResource(mPageDescriptors[position].mSelectedIcon);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
-                ((ImageView) tab.getCustomView().findViewById(R.id.tab_icon))
-                        .setImageResource(mPageDescriptors[position].mUnselectedIcon);
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
-        });
     }
 
     private class HomePagerAdapter extends FragmentPagerAdapter {
@@ -121,30 +107,30 @@ public class HomePageActivity extends WolmoActivity {
             return mPageDescriptors.length;
         }
 
+        @Override
+        public CharSequence getPageTitle(int i) {
+            return getResources().getString(mPageDescriptors[i].mTitle);
+        }
+
         public View getTabView(int position, ViewGroup parentView) {
             View v = LayoutInflater.from(HomePageActivity.this).inflate(R.layout.tab_icon_and_title, parentView, false);
             ((TextView) v.findViewById(R.id.tab_title)).setText(mPageDescriptors[position].mTitle);
-            ((ImageView) v.findViewById(R.id.tab_icon)).setImageResource(mPageDescriptors[position].mUnselectedIcon);
+            ((ImageView) v.findViewById(R.id.tab_icon)).setImageDrawable(mPageDescriptors[position].mSelector);
             return v;
         }
-
     }
 
     private static class PageDescriptor {
         public Callable<? extends Fragment> mFragmentFactory;
-        public int mSelectedIcon;
-        public int mUnselectedIcon;
+        public Drawable mSelector;
         public int mTitle;
 
         PageDescriptor(Callable<? extends Fragment> fragmentFactory,
-                              int selectedIcon,
-                              int unselectedIcon,
+                              Drawable selector,
                               int title) {
             mFragmentFactory = fragmentFactory;
-            mSelectedIcon = selectedIcon;
-            mUnselectedIcon = unselectedIcon;
+            mSelector = selector;
             mTitle = title;
         }
     }
-
 }
