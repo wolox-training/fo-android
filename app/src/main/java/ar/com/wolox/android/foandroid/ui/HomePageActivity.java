@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,7 +74,7 @@ public class HomePageActivity extends WolmoActivity {
         mViewPager.setAdapter(pagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         for (int i = 0; i < mPageDescriptors.length; i++) {
-            mTabLayout.getTabAt(i).setCustomView(pagerAdapter.getTabView(i));
+            mTabLayout.getTabAt(i).setCustomView(pagerAdapter.getTabView(i, mTabLayout));
         }
         ((ImageView)mTabLayout.getTabAt(0).getCustomView().findViewById(R.id.tab_icon))
                 .setImageResource(mPageDescriptors[0].mSelectedIcon);
@@ -120,8 +121,8 @@ public class HomePageActivity extends WolmoActivity {
             return mPageDescriptors.length;
         }
 
-        public View getTabView(int position) {
-            View v = LayoutInflater.from(HomePageActivity.this).inflate(R.layout.tab_icon_and_title, null);
+        public View getTabView(int position, ViewGroup parentView) {
+            View v = LayoutInflater.from(HomePageActivity.this).inflate(R.layout.tab_icon_and_title, parentView, false);
             ((TextView) v.findViewById(R.id.tab_title)).setText(mPageDescriptors[position].mTitle);
             ((ImageView) v.findViewById(R.id.tab_icon)).setImageResource(mPageDescriptors[position].mUnselectedIcon);
             return v;
