@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.concurrent.Callable;
+
 import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.wolmo.core.activity.WolmoActivity;
 
@@ -32,11 +34,11 @@ public class HomePageActivity extends WolmoActivity {
     protected ViewPager mViewPager;
 
     private final PageDescriptor[] mPageDescriptors = {
-            new PageDescriptor(NewsFragment.class,
+            new PageDescriptor(NewsFragment::new,
                                 R.drawable.ic_news_list_on,
                                 R.drawable.ic_news_list_off,
                                 R.string.news),
-            new PageDescriptor(ProfileFragment.class,
+            new PageDescriptor(ProfileFragment::new,
                                 R.drawable.ic_profile_on,
                                 R.drawable.ic_profile_off,
                                 R.string.profile)
@@ -106,7 +108,7 @@ public class HomePageActivity extends WolmoActivity {
         public Fragment getItem(int position) {
 
             try {
-                return mPageDescriptors[position].mFragmentClass.newInstance();
+                return mPageDescriptors[position].mFragmentFactory.call();
             } catch (Exception e) {
                 throw new RuntimeException("Reflective fragment instantiation failed", e);
             }
@@ -128,16 +130,16 @@ public class HomePageActivity extends WolmoActivity {
     }
 
     private static class PageDescriptor {
-        public Class<? extends Fragment> mFragmentClass;
+        public Callable<? extends Fragment> mFragmentFactory;
         public int mSelectedIcon;
         public int mUnselectedIcon;
         public int mTitle;
 
-        PageDescriptor(Class<? extends Fragment> fragmentClass,
+        PageDescriptor(Callable<? extends Fragment> fragmentFactory,
                               int selectedIcon,
                               int unselectedIcon,
                               int title) {
-            mFragmentClass = fragmentClass;
+            mFragmentFactory = fragmentFactory;
             mSelectedIcon = selectedIcon;
             mUnselectedIcon = unselectedIcon;
             mTitle = title;
