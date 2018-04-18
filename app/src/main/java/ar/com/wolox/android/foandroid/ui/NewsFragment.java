@@ -13,9 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.Date;
@@ -31,8 +28,6 @@ public class NewsFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
-
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSVV";
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -53,11 +48,11 @@ public class NewsFragment extends Fragment {
 
         mAdapter.setOnLoadMoreListener( () -> {
                 if (mNewsList.size() <= 40) {
-                    mNewsList.add(null);
+                    mNewsList.add(null);    // Add progress bar
                     mAdapter.notifyItemInserted(mNewsList.size() - 1);
                     new Handler().postDelayed(() -> {
 
-                            mNewsList.remove(mNewsList.size() - 1);
+                            mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
                             mAdapter.notifyItemRemoved(mNewsList.size());
 
                             //Generating more data
@@ -131,6 +126,7 @@ public class NewsFragment extends Fragment {
 
         @Override
         public int getItemViewType(int position) {
+            // null represents the progress bar
             return mNewsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
         }
 
