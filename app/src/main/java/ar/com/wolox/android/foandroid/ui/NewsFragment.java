@@ -80,7 +80,7 @@ public class NewsFragment extends Fragment {
         long millis = dateTime.getMillis();
         Date date = new Date(millis);
         PrettyTime pt = new PrettyTime();
-        news.setCreatedAt(pt.format(date));
+        news.setCreatedAt(pt.format(date)); // No i18n or l10n
         mNewsList.add(news);
     }
 
