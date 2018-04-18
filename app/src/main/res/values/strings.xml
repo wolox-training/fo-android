@@ -11,6 +11,7 @@
     <string name="wolox">Wolox</string>
     <string name="news">NEWS</string>
     <string name="profile">PROFILE</string>
+    <string name="no_more_news">No more news</string>
 
     <!-- General -->
     <string name="example_title">ExampleFragment</string>

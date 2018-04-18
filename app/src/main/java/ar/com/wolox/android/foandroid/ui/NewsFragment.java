@@ -12,6 +12,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,16 +32,15 @@ public class NewsFragment extends Fragment {
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
 
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSVV";
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
         for (int i = 0; i < 10; i++) {
-            News contact = new News();
-            contact.setTitle(generateTitle());
-            contact.setText(generateText());
-            mNewsList.add(contact);
+            addFakeNews();
         }
 
         View view = inflater.inflate(R.layout.fragment_news, container, false);
@@ -46,7 +52,7 @@ public class NewsFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnLoadMoreListener( () -> {
-                if (mNewsList.size() <= 100) {
+                if (mNewsList.size() <= 40) {
                     mNewsList.add(null);
                     mAdapter.notifyItemInserted(mNewsList.size() - 1);
                     new Handler().postDelayed(() -> {
@@ -58,20 +64,29 @@ public class NewsFragment extends Fragment {
                             int index = mNewsList.size();
                             int end = index + 10;
                             for (int i = index; i < end; i++) {
-                                News news = new News();
-                                news.setTitle(generateTitle());
-                                news.setText(generateText());
-                                mNewsList.add(news);
+                                addFakeNews();
                             }
                             mAdapter.notifyDataSetChanged();
                             mAdapter.setLoaded();
-                    }, 5000);
+                    }, 2000);
                 } else {
-                    Toast.makeText(NewsFragment.this.getContext(), "Loading data completed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewsFragment.this.getContext(), R.string.no_more_news, Toast.LENGTH_SHORT).show();
                 }
         });
 
         return view;
+    }
+
+    private void addFakeNews() {
+        News news = new News();
+        news.setTitle(generateTitle());
+        news.setText(generateText());
+        DateTime dateTime = DateTime.parse("2016-07-18T14:00:29.985Z");
+        long millis = dateTime.getMillis();
+        Date date = new Date(millis);
+        PrettyTime pt = new PrettyTime();
+        news.setCreatedAt(pt.format(date));
+        mNewsList.add(news);
     }
 
     private String generateTitle() {
@@ -93,11 +108,6 @@ public class NewsFragment extends Fragment {
         private int mLastVisibleItem;
         private int mTotalItemCount;
         private boolean mIsLoading;
-
-        private static final String TITLE = "Ali Connors";
-        private static final String SUMMARY = "I'll be in your neighbourhood doing errands ...";
-        private static final String TIME = "15m";
-        private static final int COUNT = 40;    // Arbitrary
 
         public NewsAdapter(RecyclerView recyclerView, List<News> newsList) {
             this.mNewsList = newsList;
@@ -143,6 +153,7 @@ public class NewsFragment extends Fragment {
                 NewsViewHolder newsViewHolder = (NewsViewHolder) holder;
                 newsViewHolder.mTitle.setText(news.getTitle());
                 newsViewHolder.mSummary.setText(news.getText());
+                newsViewHolder.mTime.setText(news.getCreatedAt());
             } else if (holder instanceof LoadingViewHolder) {
                 LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
                 loadingViewHolder.progressBar.setIndeterminate(true);
@@ -167,6 +178,7 @@ public class NewsFragment extends Fragment {
             TextView mTitle;
             TextView mSummary;
             TextView mTime;
+
             NewsViewHolder(View v) {
                 super(v);
                 mTitle = v.findViewById(R.id.news_title);
