@@ -119,28 +119,6 @@ public class NewsFragment extends Fragment {
             });
         }
 
-        /*
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.news_list_item, parent, false);
-
-            return new NewsViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ((NewsViewHolder) holder).mTitle.setText(TITLE);
-            ((NewsViewHolder) holder).mSummary.setText(SUMMARY);
-            ((NewsViewHolder) holder).mTime.setText(TIME);
-        }
-
-        @Override
-        public int getItemCount() {
-            return COUNT;
-        }
-        */
-
         @Override
         public int getItemViewType(int position) {
             return mNewsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
