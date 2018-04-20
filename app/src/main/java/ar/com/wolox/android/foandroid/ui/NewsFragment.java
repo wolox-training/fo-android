@@ -35,7 +35,7 @@ public class NewsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {  // TODO: news should be queried from the server
             addFakeNews();
         }
 
@@ -51,7 +51,7 @@ public class NewsFragment extends Fragment {
                 if (mNewsList.size() <= 40) {
                     mNewsList.add(null);    // Add progress bar
                     mAdapter.notifyItemInserted(mNewsList.size() - 1);
-                    new Handler().postDelayed(() -> {
+                    new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
 
                             mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
                             mAdapter.notifyItemRemoved(mNewsList.size());
