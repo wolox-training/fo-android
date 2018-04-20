@@ -50,7 +50,8 @@ public class NewsFragment extends Fragment {
         mAdapter.setOnLoadMoreListener( () -> {
                 if (mNewsList.size() <= 40) {
                     mNewsList.add(null);    // Add progress bar
-                    mAdapter.notifyItemInserted(mNewsList.size() - 1);
+                    mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
+                    //mAdapter.notifyItemInserted(mNewsList.size() - 1);
                     new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
 
                             mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
