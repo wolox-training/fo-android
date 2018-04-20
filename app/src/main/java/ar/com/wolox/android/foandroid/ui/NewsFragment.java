@@ -1,14 +1,10 @@
 package ar.com.wolox.android.foandroid.ui;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -21,10 +17,10 @@ import java.util.List;
 import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.android.foandroid.adapters.NewsAdapter;
 import ar.com.wolox.android.foandroid.model.News;
+import ar.com.wolox.wolmo.core.fragment.WolmoFragment;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPresenter.NewsView {
 
     @BindView(R.id.fragment_news_recycler_view) protected RecyclerView mRecyclerView;
     @BindView(R.id.fragment_news_FAB) protected FloatingActionButton mFAB;
@@ -33,16 +29,21 @@ public class NewsFragment extends Fragment {
     private List<News> mNewsList = new LinkedList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
+    public int layout() {
+        return R.layout.fragment_news;
+    }
 
+    @Override
+    public NewsPresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         for (int i = 0; i < 10; i++) {  // TODO: news should be queried from the server
             addFakeNews();
         }
 
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
-        ButterKnife.bind(this, view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -50,30 +51,28 @@ public class NewsFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnLoadMoreListener( () -> {
-                if (mNewsList.size() <= 40) {
-                    mNewsList.add(null);    // Add progress bar
-                    mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
-                    //mAdapter.notifyItemInserted(mNewsList.size() - 1);
-                    new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
+            if (mNewsList.size() <= 40) {
+                mNewsList.add(null);    // Add progress bar
+                mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
+                //mAdapter.notifyItemInserted(mNewsList.size() - 1);
+                new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
 
-                            mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
-                            mAdapter.notifyItemRemoved(mNewsList.size());
+                    mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
+                    mAdapter.notifyItemRemoved(mNewsList.size());
 
-                            //Generating more data
-                            int index = mNewsList.size();
-                            int end = index + 10;
-                            for (int i = index; i < end; i++) {
-                                addFakeNews();
-                            }
-                            mAdapter.notifyDataSetChanged();
-                            mAdapter.setLoaded();
-                    }, 2000);
-                } else {
-                    Toast.makeText(NewsFragment.this.getContext(), R.string.no_more_news, Toast.LENGTH_SHORT).show();
-                }
+                    //Generating more data
+                    int index = mNewsList.size();
+                    int end = index + 10;
+                    for (int i = index; i < end; i++) {
+                        addFakeNews();
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    mAdapter.setLoaded();
+                }, 2000);
+            } else {
+                Toast.makeText(NewsFragment.this.getContext(), R.string.no_more_news, Toast.LENGTH_SHORT).show();
+            }
         });
-
-        return view;
     }
 
     private void addFakeNews() {
@@ -104,4 +103,9 @@ public class NewsFragment extends Fragment {
             mFAB.show();
         }
     }
+
+    public void onNewsLoaded() {
+
+    }
+
 }
