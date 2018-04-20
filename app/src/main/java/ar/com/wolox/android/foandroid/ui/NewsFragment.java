@@ -1,16 +1,9 @@
 package ar.com.wolox.android.foandroid.ui;
 
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
-import org.joda.time.DateTime;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,64 +28,26 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
 
     @Override
     public NewsPresenter createPresenter() {
-        return null;
+        return new NewsPresenter(this);
     }
 
     @Override
     public void init() {
-        for (int i = 0; i < 10; i++) {  // TODO: news should be queried from the server
-            addFakeNews();
-        }
-
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsAdapter(mRecyclerView, mNewsList);
         mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.setOnLoadMoreListener( () -> {
-            if (mNewsList.size() <= 40) {
-                mNewsList.add(null);    // Add progress bar
-                mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
-                //mAdapter.notifyItemInserted(mNewsList.size() - 1);
-                new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
-
-                    mNewsList.remove(mNewsList.size() - 1); // Remove progress bar
-                    mAdapter.notifyItemRemoved(mNewsList.size());
-
-                    //Generating more data
-                    int index = mNewsList.size();
-                    int end = index + 10;
-                    for (int i = index; i < end; i++) {
-                        addFakeNews();
-                    }
-                    mAdapter.notifyDataSetChanged();
-                    mAdapter.setLoaded();
-                }, 2000);
-            } else {
-                Toast.makeText(NewsFragment.this.getContext(), R.string.no_more_news, Toast.LENGTH_SHORT).show();
-            }
-        });
+        mNewsList.add(null);
+        mAdapter.setOnLoadMoreListener(this::startFetchingNews);
     }
 
-    private void addFakeNews() {
-        News news = new News();
-        news.setTitle(generateTitle());
-        news.setText(generateText());
-        DateTime dateTime = DateTime.parse("2016-07-18T14:00:29.985Z");
-        long millis = dateTime.getMillis();
-        Date date = new Date(millis);
-        PrettyTime pt = new PrettyTime();
-        news.setCreatedAt(pt.format(date)); // No i18n or l10n
-        mNewsList.add(news);
-    }
-
-    private String generateTitle() {
-        return "Title " + (int)(java.lang.Math.random()*500);
-    }
-
-    private String generateText() {
-        return "Summary " + (int)(java.lang.Math.random()*500);
+    private void startFetchingNews() {
+        if (mNewsList.size() != 0 && mNewsList.get(mNewsList.size()-1) != null) {
+            mNewsList.add(null);    // Add progress bar
+            mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
+        }
+        getPresenter().fetchNews();
     }
 
     @Override
@@ -104,8 +59,12 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
         }
     }
 
-    public void onNewsLoaded() {
-
+    public void onNewsLoaded(List<News> newsList) {
+        mNewsList.remove(mNewsList.size() - 1);
+        mAdapter.notifyItemRemoved(mNewsList.size());
+        mNewsList.addAll(newsList);
+        mAdapter.notifyDataSetChanged();
+        mAdapter.setLoaded();
     }
 
 }
