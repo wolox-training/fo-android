@@ -20,10 +20,10 @@ public class NewsAdapter extends RecyclerView.Adapter {
 
     private static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_LOADING = 1;
+    private static final int VISIBLE_THRESHOLD = 5;
 
     private OnLoadMoreListener mOnLoadMoreListener;
     private List<News> mNewsList;
-    private int mVisibleThreshold = 5;
     private int mLastVisibleItem;
     private int mTotalItemCount;
     private boolean mIsLoading;
@@ -38,7 +38,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
                 super.onScrolled(recyclerView, dx, dy);
                 mTotalItemCount = linearLayoutManager.getItemCount();
                 mLastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!mIsLoading && mTotalItemCount <= (mLastVisibleItem + mVisibleThreshold)) {
+                if (!mIsLoading && mTotalItemCount <= (mLastVisibleItem + VISIBLE_THRESHOLD)) {
                     if (mOnLoadMoreListener != null) {
                         mOnLoadMoreListener.onLoadMore();
                     }
