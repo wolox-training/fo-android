@@ -13,6 +13,8 @@ import java.util.List;
 import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.android.foandroid.model.News;
 import ar.com.wolox.android.foandroid.ui.OnLoadMoreListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class NewsAdapter extends RecyclerView.Adapter {
 
@@ -91,26 +93,25 @@ public class NewsAdapter extends RecyclerView.Adapter {
         mOnLoadMoreListener = onLoadMoreListener;
     }
 
-    private static class NewsViewHolder extends RecyclerView.ViewHolder {
+    protected static class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTitle;
-        TextView mSummary;
-        TextView mTime;
+        @BindView(R.id.news_title) TextView mTitle;
+        @BindView(R.id.news_summary) TextView mSummary;
+        @BindView(R.id.news_time) TextView mTime;
 
-        NewsViewHolder(View v) {
-            super(v);
-            mTitle = v.findViewById(R.id.news_title);
-            mSummary = v.findViewById(R.id.news_summary);
-            mTime = v.findViewById(R.id.news_time);
+        NewsViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
         }
     }
 
-    private class LoadingViewHolder extends RecyclerView.ViewHolder {
-        ProgressBar progressBar;
+    protected class LoadingViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.loader_progressbar) ProgressBar progressBar;
 
         LoadingViewHolder(View view) {
             super(view);
-            progressBar = view.findViewById(R.id.loader_progressbar);
+            ButterKnife.bind(this, view);
         }
     }
 }

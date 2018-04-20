@@ -20,10 +20,12 @@ import java.util.List;
 import ar.com.wolox.android.foandroid.R;
 import ar.com.wolox.android.foandroid.adapters.NewsAdapter;
 import ar.com.wolox.android.foandroid.model.News;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class NewsFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_news_recycler_view) protected RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
@@ -38,7 +40,7 @@ public class NewsFragment extends Fragment {
         }
 
         View view = inflater.inflate(R.layout.fragment_news, container, false);
-        mRecyclerView = view.findViewById(R.id.fragment_news_recycler_view);
+        ButterKnife.bind(this, view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
