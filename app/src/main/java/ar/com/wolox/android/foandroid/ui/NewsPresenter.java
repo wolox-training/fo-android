@@ -1,12 +1,5 @@
 package ar.com.wolox.android.foandroid.ui;
 
-import android.os.Handler;
-
-import org.joda.time.DateTime;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import ar.com.wolox.android.foandroid.model.News;
@@ -32,7 +25,16 @@ public class NewsPresenter extends BasePresenter<NewsPresenter.NewsView> {
 
                     @Override
                     public void onResponseSuccessful(List<News> newsList) {
-                        newsList = newsList.subList(current % more, newsList.size());
+                        for (int i = 0; i < current%more; i++) {
+                            newsList.remove(0);
+                        }
+
+                        if (newsList != null && !newsList.isEmpty()) {
+                            for (int i = 0; i < 10; i++) {
+                                newsList.add(newsList.get(0));
+                            }
+                        }
+
                         if (isViewCreated()) {
                             getView().onNewsLoaded(newsList);
                         }

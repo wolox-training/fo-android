@@ -42,16 +42,14 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new NewsAdapter(mRecyclerView, mNewsList);
         mRecyclerView.setAdapter(mAdapter);
-        mNewsList.add(null);
         mAdapter.setOnLoadMoreListener(this::startFetchingNews);
+        startFetchingNews();
     }
 
     private void startFetchingNews() {
-        getPresenter().fetchNews(mNewsList.size(), PAGE_SIZE);
-        if (mNewsList.size() != 0 && mNewsList.get(mNewsList.size()-1) != null) {
-            mNewsList.add(null);    // Add progress bar
-            mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
-        }
+        mNewsList.add(null);    // Add progress bar
+        mAdapter.notifyItemInserted(mNewsList.size() - 1);
+        getPresenter().fetchNews(mNewsList.size()-1, PAGE_SIZE);
     }
 
     @Override
@@ -67,9 +65,16 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
         mNewsList.remove(mNewsList.size() - 1);
         mAdapter.notifyItemRemoved(mNewsList.size());
         if (newsList != null) {
-            mNewsList.addAll(newsList);
-            mAdapter.notifyDataSetChanged();
             mAdapter.setLoaded();
+            if (mNewsList.isEmpty()) {
+                mNewsList.addAll(newsList);
+                mAdapter.notifyDataSetChanged();
+            } else {
+                int lastPosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+                if (lastPosition >= mNewsList.size()-1) {
+                    Toast.makeText(getContext(), R.string.no_more_news, Toast.LENGTH_SHORT).show();
+                }
+            }
         } else {
             Toast.makeText(getContext(), R.string.internet_connection_error, Toast.LENGTH_LONG).show();
         }

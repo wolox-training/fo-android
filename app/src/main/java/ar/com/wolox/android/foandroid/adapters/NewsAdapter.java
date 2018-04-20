@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.List;
 
 import ar.com.wolox.android.foandroid.R;
@@ -36,13 +38,15 @@ public class NewsAdapter extends RecyclerView.Adapter {
 
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                mTotalItemCount = linearLayoutManager.getItemCount();
-                mLastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (!mIsLoading && mTotalItemCount <= (mLastVisibleItem + VISIBLE_THRESHOLD)) {
-                    if (mOnLoadMoreListener != null) {
-                        mOnLoadMoreListener.onLoadMore();
+                if (dy != 0) {
+                    mTotalItemCount = linearLayoutManager.getItemCount();
+                    mLastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    if (!mIsLoading && mTotalItemCount <= (mLastVisibleItem + VISIBLE_THRESHOLD)) {
+                        if (mOnLoadMoreListener != null) {
+                            mOnLoadMoreListener.onLoadMore();
+                        }
+                        mIsLoading = true;
                     }
-                    mIsLoading = true;
                 }
             }
         });
@@ -74,6 +78,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
             newsViewHolder.mTitle.setText(news.getTitle());
             newsViewHolder.mSummary.setText(news.getText());
             newsViewHolder.mTime.setText(news.getCreatedAt());
+            newsViewHolder.mImage.setImageURI(news.getPicture());
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);
@@ -98,6 +103,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
         @BindView(R.id.news_title) TextView mTitle;
         @BindView(R.id.news_summary) TextView mSummary;
         @BindView(R.id.news_time) TextView mTime;
+        @BindView(R.id.news_image) SimpleDraweeView mImage;
 
         NewsViewHolder(View view) {
             super(view);
