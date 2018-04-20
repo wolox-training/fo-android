@@ -10,41 +10,48 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ar.com.wolox.android.foandroid.model.News;
+import ar.com.wolox.android.foandroid.networking.NewsService;
 import ar.com.wolox.wolmo.core.presenter.BasePresenter;
+import ar.com.wolox.wolmo.networking.retrofit.RetrofitServices;
+import ar.com.wolox.wolmo.networking.retrofit.callback.NetworkCallback;
+import okhttp3.ResponseBody;
 
 public class NewsPresenter extends BasePresenter<NewsPresenter.NewsView> {
 
-    NewsPresenter(NewsPresenter.NewsView newsView) {
+    private RetrofitServices mRetrofitServices;
+
+    NewsPresenter(NewsPresenter.NewsView newsView, RetrofitServices retrofitServices) {
         super(newsView);
+        mRetrofitServices = retrofitServices;
     }
 
-    public void fetchNews() {
-        new Handler().postDelayed(() -> {   // TODO: news should be queried from the server
+    public void fetchNews(int current, int more) {
+        mRetrofitServices.getService(NewsService.class)
+                .getNews(current/more, more)
+                .enqueue(new NetworkCallback<List<News>>() {
 
-            List<News> newsList = new LinkedList<>();
-            for (int i = 0; i < 10; i++) {
-                News news = new News();
-                news.setTitle(generateTitle());
-                news.setText(generateText());
-                DateTime dateTime = DateTime.parse("2016-07-18T14:00:29.985Z");
-                long millis = dateTime.getMillis();
-                Date date = new Date(millis);
-                PrettyTime pt = new PrettyTime();
-                news.setCreatedAt(pt.format(date)); // No i18n or l10n
-                newsList.add(news);
-            }
-            if (isViewCreated()) {
-                getView().onNewsLoaded(newsList);
-            }
-        }, 2000);
-    }
+                    @Override
+                    public void onResponseSuccessful(List<News> newsList) {
+                        newsList = newsList.subList(current % more, newsList.size());
+                        if (isViewCreated()) {
+                            getView().onNewsLoaded(newsList);
+                        }
+                    }
 
-    private String generateTitle() {
-        return "Title " + (int)(java.lang.Math.random()*500);
-    }
+                    @Override
+                    public void onResponseFailed(ResponseBody responseBody, int i) {
+                        if (isViewCreated()) {
+                            getView().onNewsLoaded(null);
+                        }
+                    }
 
-    private String generateText() {
-        return "Summary " + (int)(java.lang.Math.random()*500);
+                    @Override
+                    public void onCallFailure(Throwable throwable) {
+                        if (isViewCreated()) {
+                            getView().onNewsLoaded(null);
+                        }
+                    }
+                });
     }
 
     public interface NewsView {

@@ -3,11 +3,13 @@ package ar.com.wolox.android.foandroid.ui;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import ar.com.wolox.android.foandroid.R;
+import ar.com.wolox.android.foandroid.TrainingApplication;
 import ar.com.wolox.android.foandroid.adapters.NewsAdapter;
 import ar.com.wolox.android.foandroid.model.News;
 import ar.com.wolox.wolmo.core.fragment.WolmoFragment;
@@ -21,6 +23,8 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
 
+    private static final int PAGE_SIZE = 10;
+
     @Override
     public int layout() {
         return R.layout.fragment_news;
@@ -28,7 +32,7 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
 
     @Override
     public NewsPresenter createPresenter() {
-        return new NewsPresenter(this);
+        return new NewsPresenter(this, TrainingApplication.RETROFIT_SERVICES_INSTANCE);
     }
 
     @Override
@@ -43,11 +47,11 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
     }
 
     private void startFetchingNews() {
+        getPresenter().fetchNews(mNewsList.size(), PAGE_SIZE);
         if (mNewsList.size() != 0 && mNewsList.get(mNewsList.size()-1) != null) {
             mNewsList.add(null);    // Add progress bar
             mRecyclerView.post(() -> mAdapter.notifyItemInserted(mNewsList.size() - 1));
         }
-        getPresenter().fetchNews();
     }
 
     @Override
@@ -62,9 +66,13 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
     public void onNewsLoaded(List<News> newsList) {
         mNewsList.remove(mNewsList.size() - 1);
         mAdapter.notifyItemRemoved(mNewsList.size());
-        mNewsList.addAll(newsList);
-        mAdapter.notifyDataSetChanged();
-        mAdapter.setLoaded();
+        if (newsList != null) {
+            mNewsList.addAll(newsList);
+            mAdapter.notifyDataSetChanged();
+            mAdapter.setLoaded();
+        } else {
+            Toast.makeText(getContext(), R.string.internet_connection_error, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

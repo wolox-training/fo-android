@@ -33,6 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/level_1"
         android:textColor="@color/news_summary"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/level_5"
         app:layout_constraintBottom_toBottomOf="@id/news_image"
         app:layout_constraintLeft_toRightOf="@id/news_image" />
 
