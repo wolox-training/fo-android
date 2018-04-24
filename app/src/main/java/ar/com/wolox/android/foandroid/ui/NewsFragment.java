@@ -2,6 +2,7 @@ package ar.com.wolox.android.foandroid.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import butterknife.ButterKnife;
 public class NewsFragment extends Fragment {
 
     @BindView(R.id.fragment_news_recycler_view) protected RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_news_FAB) protected FloatingActionButton mFAB;
     private RecyclerView.LayoutManager mLayoutManager;
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
@@ -94,4 +96,12 @@ public class NewsFragment extends Fragment {
         return "Summary " + (int)(java.lang.Math.random()*500);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && mFAB != null) {
+            System.out.println("Becoming visible");
+            mFAB.show();
+        }
+    }
 }
