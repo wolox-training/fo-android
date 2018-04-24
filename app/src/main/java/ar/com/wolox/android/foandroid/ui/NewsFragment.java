@@ -1,6 +1,7 @@
 package ar.com.wolox.android.foandroid.ui;
 
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
 
     @BindView(R.id.fragment_news_recycler_view) protected RecyclerView mRecyclerView;
     @BindView(R.id.fragment_news_FAB) protected FloatingActionButton mFAB;
+    @BindView(R.id.fragment_news_swipe_refresh) protected SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.LayoutManager mLayoutManager;
     private NewsAdapter mAdapter;
     private List<News> mNewsList = new LinkedList<>();
@@ -44,6 +46,11 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnLoadMoreListener(this::startFetchingNews);
         startFetchingNews();
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (!mNewsList.isEmpty() && mNewsList.get(0) != null) {
+                getPresenter().refreshNews(mNewsList.get(0).getId());
+            }
+        });
     }
 
     private void startFetchingNews() {
@@ -78,6 +85,19 @@ public class NewsFragment extends WolmoFragment<NewsPresenter> implements NewsPr
         } else {
             Toast.makeText(getContext(), R.string.internet_connection_error, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onNewsRefreshed(List<News> newsList) {
+        if (newsList != null) {
+            if (!newsList.isEmpty()) {
+                mNewsList.addAll(0, newsList);
+                mAdapter.notifyDataSetChanged();
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.internet_connection_error, Toast.LENGTH_LONG).show();
+        }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 }
