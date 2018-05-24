@@ -7,4 +7,11 @@
 
     <color name="selected_tab_text">#91be5e</color>
     <color name="unselected_tab_text">#9c9c9d</color>
+
+    <color name="news_title">#4c4c4d</color>
+    <color name="news_summary">#99999b</color>
+
+    <color name="image_placeholder_color">#999999</color>
+
+    <color name="accent">#90bf5e</color>
 </resources>
